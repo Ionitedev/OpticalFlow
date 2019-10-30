@@ -8,13 +8,13 @@
 
 #define _Release_2DArray(X,i,length) for(i=0;i<length;i++) if(X[i]!=NULL) delete X[i]; delete []X
 
-#ifndef _abs(x)
+#ifndef _abs
 #define _abs(x) (x>=0)?x:-x
 #endif
 
-#ifndef PI
-#define PI 3.1415927
-#endif
+// #ifndef PI
+// #define PI 3.1415927
+// #endif
 
 enum SortType{SortAscending,SortDescending};
 

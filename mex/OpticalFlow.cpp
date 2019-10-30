@@ -3,7 +3,7 @@
 #include "GaussianPyramid.h"
 #include <cstdlib> 
 #include <iostream>
-
+#include <fstream>
 
 using namespace std;
 
@@ -19,6 +19,40 @@ OpticalFlow::NoiseModel OpticalFlow::noiseModel = OpticalFlow::Lap;
 GaussianMixture OpticalFlow::GMPara;
 Vector<double> OpticalFlow::LapPara;
 
+int main(void) {
+	DImage img1, img2;
+	img1.imread("/home/ionite/visual_info/project/OpticalFlow/car1.jpg");
+	img2.imread("/home/ionite/visual_info/project/OpticalFlow/car2.jpg");
+
+	double alpha = 1;
+	double ratio = 0.5;
+	int minWidth = 40;
+	int nOuterFPIterations = 3;
+	int nInnerFPIterations = 1;
+	int nSORIterations = 20;
+
+	alpha = 0.012;
+	ratio = 0.75;
+	minWidth = 20;
+	nOuterFPIterations = 7;
+	nInnerFPIterations = 1;
+	nSORIterations = 30;
+
+	alpha = 0.02;
+	ratio = 0.5;
+	minWidth = 20;
+	nOuterFPIterations = 10;
+	nInnerFPIterations = 1;
+	nSORIterations = 30;
+
+	DImage vx, vy, warpI2;
+	OpticalFlow::Coarse2FineFlow(vx, vy, warpI2, img1, img2, alpha, ratio, minWidth, nOuterFPIterations, nInnerFPIterations, nSORIterations);
+
+	warpI2.imwrite("/home/ionite/visual_info/project/OpticalFlow/warp.jpg");
+	OpticalFlow::showFlow(vx, "/home/ionite/visual_info/project/OpticalFlow/vx_show.jpg");
+	OpticalFlow::showFlow(vy, "/home/ionite/visual_info/project/OpticalFlow/vy_show.jpg");
+	return 0;
+}
 
 OpticalFlow::OpticalFlow(void)
 {
@@ -224,7 +258,6 @@ void OpticalFlow::SmoothFlowSOR(const DImage &Im1, const DImage &Im2, DImage &wa
 	{
 		// compute the gradient
 		getDxs(imdx,imdy,imdt,Im1,warpIm2);
-
 		// generate the mask to set the weight of the pxiels moving outside of the image boundary to be zero
 		genInImageMask(mask,u,v);
 
@@ -451,12 +484,10 @@ void OpticalFlow::SmoothFlowSOR(const DImage &Im1, const DImage &Im2, DImage &wa
 
 }
 
-
-
 //--------------------------------------------------------------------------------------------------------
 // function to compute optical flow field using two fixed point iterations
 // Input arguments:
-//     Im1, Im2:						frame 1 and frame 2
+//  Im1, Im2:						frame 1 and frame 2
 //	warpIm2:						the warped frame 2 according to the current flow field u and v
 //	u,v:									the current flow field, NOTICE that they are also output arguments
 //	
@@ -836,6 +867,9 @@ void OpticalFlow::estLaplacianNoise(const DImage& Im1,const DImage& Im2,Vector<d
 				para[k] += temp;
 				total[k]++;
 			}
+			else {
+				//if (total[k] == 0) cout << "channel " << k << endl;
+			}
 		}
 	for(int k = 0;k<nChannels;k++)
 	{
@@ -1197,5 +1231,5 @@ bool OpticalFlow::showFlow(const DImage& flow,const char* filename)
 	double Min = flow.min();
 	for(int i = 0;i<flow.npixels(); i++)
 		foo[i] = (flow[i]-Min)/(Max-Min)*255;
-	foo.imwrite(filename);
+	return foo.imwrite(filename);
 }

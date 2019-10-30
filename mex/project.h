@@ -1,10 +1,9 @@
 #pragma once
 #include "stdio.h"
 #include <vector>
-
 // if the files are compiled in linux or mac os then uncomment the following line, otherwise comment it if you compile using visual studio in windows
-// #define _LINUX_MAC
-// #define _OPENCV
+#define _LINUX_MAC
+#define _OPENCV
 
 template <class T>
 void _Release1DBuffer(T* pBuffer)
@@ -24,7 +23,7 @@ void _Rlease2DBuffer(T** pBuffer,size_t nElements)
 }
 
 
-#define _MATLAB
+//#define _MATLAB
 
 #ifdef _MATLAB
 #include "mex.h"

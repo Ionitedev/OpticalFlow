@@ -9,6 +9,7 @@
 #include <typeinfo>
 #include "Vector.h"
 #include "Stochastic.h"
+#include <cstring>
 
 #ifndef _MATLAB
 	#include "ImageIO.h"
@@ -795,7 +796,7 @@ bool Image<T>::saveImage(const char *filename) const
 		myfile.close();
 		return foo;
 	}
-	else
+	else 
 		return false;
 }
 
@@ -839,7 +840,7 @@ bool Image<T>::loadImage(ifstream& myfile)
 		sprintf(type,"unsigned int");
 	if(strcasecmp(type,typeid(T).name())!=0)
 	{
-		cout<<"The type of the image is different from the type of the object!"<<endl;
+		cout << type << " The type of the image is different from the type of the object!"<<endl;
 		return false;
 	}
 #else
@@ -849,7 +850,7 @@ bool Image<T>::loadImage(ifstream& myfile)
 		sprintf(type,"unsigned int");
 	if(strcmpi(type,typeid(T).name())!=0)
 	{
-		cout<<"The type of the image is different from the type of the object!"<<endl;
+		cout << type << " The type of the image is different from the type of the object!"<<endl;
 		return false;
 	}
 #endif
@@ -910,7 +911,6 @@ bool Image<T>::imread(const char* filename)
 template <class T>
 bool Image<T>::imwrite(const char* filename) const
 {
-	
 	ImageIO::ImageType type;
 	if(IsDerivativeImage)
 		type=ImageIO::derivative;
